@@ -1,0 +1,9 @@
+﻿<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui">
+	<contextMenus>
+		<contextMenu idMso="ContextMenuMailItem">
+			<menu id="AzureDevOps" label="Azure DevOps" insertAfterMso="Delete">
+				<button id="CreateWorkItem" label="CreateWorkItem" onAction="OnCreateWorkItemClicked" />
+			</menu>
+		</contextMenu>
+	</contextMenus>
+</customUI>
