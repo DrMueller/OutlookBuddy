@@ -1,9 +1,12 @@
 ﻿<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui">
 	<contextMenus>
+		<!-- Customize the right-click context menu for MailItem -->
 		<contextMenu idMso="ContextMenuMailItem">
-			<menu id="AzureDevOps" label="Azure DevOps" insertAfterMso="Delete">
-				<button id="CreateWorkItem" label="CreateWorkItem" onAction="OnCreateWorkItemClicked" />
-			</menu>
+			<button id="CreateWorkitemBtn"
+			        label="Create Work Item"
+			        getImage="CreateWorkItemImage"
+			        onAction="HandleCreateWorkItemClicked"
+			        insertAfterMso="MailReply" />
 		</contextMenu>
 	</contextMenus>
 </customUI>

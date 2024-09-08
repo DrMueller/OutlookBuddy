@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Lamar;
-using OutlookBuddy.Areas.AzureDevOps.Ribbons;
+﻿using Lamar;
+using OutlookBuddy.Areas.AzureDevOps.Shared.Ribbons;
 
 namespace OutlookBuddy.Infrastructure.DependencyInjection
 {

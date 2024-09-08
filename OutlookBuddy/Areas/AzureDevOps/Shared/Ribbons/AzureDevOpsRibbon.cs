@@ -1,44 +1,37 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Microsoft.Office.Core;
 using Microsoft.Office.Interop.Outlook;
 using OutlookBuddy.Areas.AzureDevOps.CreateWorkItem.Services;
 using OutlookBuddy.Infrastructure.Context;
-using Office = Microsoft.Office.Core;
 
-// TODO:  Follow these steps to enable the Ribbon (XML) item:
-
-// 1: Copy the following code block into the ThisAddin, ThisWorkbook, or ThisDocument class.
-
-//  protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
-//  {
-//      return new AzureDevOpsRibbon();
-//  }
-
-// 2. Create callback methods in the "Ribbon Callbacks" region of this class to handle user
-//    actions, such as clicking a button. Note: if you have exported this Ribbon from the Ribbon designer,
-//    move your code from the event handlers to the callback methods and modify the code to work with the
-//    Ribbon extensibility (RibbonX) programming model.
-
-// 3. Assign attributes to the control tags in the Ribbon XML file to identify the appropriate callback methods in your code.  
-
-// For more information, see the Ribbon XML documentation in the Visual Studio Tools for Office Help.
-
-
-namespace OutlookBuddy.Areas.AzureDevOps.Ribbons
+namespace OutlookBuddy.Areas.AzureDevOps.Shared.Ribbons
 {
     [ComVisible(true)]
-    public class AzureDevOpsRibbon : Office.IRibbonExtensibility
+    public class AzureDevOpsRibbon : IRibbonExtensibility
     {
-        private Office.IRibbonUI ribbon;
+        private IRibbonUI ribbon;
 
         #region IRibbonExtensibility Members
 
         public string GetCustomUI(string ribbonID)
         {
-            return GetResourceText("OutlookBuddy.Areas.AzureDevOps.Ribbons.AzureDevOpsRibbon.xml");
+            return GetResourceText("OutlookBuddy.Areas.AzureDevOps.Shared.Ribbons.AzureDevOpsRibbon.xml");
+        }
+
+        #endregion
+
+        #region Ribbon Callbacks
+
+        //Create callback methods here. For more information about adding callback methods, visit https://go.microsoft.com/fwlink/?LinkID=271226
+
+        public void Ribbon_Load(IRibbonUI ribbonUI)
+        {
+            ribbon = ribbonUI;
         }
 
         #endregion
@@ -61,30 +54,36 @@ namespace OutlookBuddy.Areas.AzureDevOps.Ribbons
 
         #endregion
 
-        #region Ribbon Callbacks
-
-        //Create callback methods here. For more information about adding callback methods, visit https://go.microsoft.com/fwlink/?LinkID=271226
-
-        public async void OnCreateWorkItemClicked(Office.IRibbonControl control)
+        public Bitmap CreateWorkItemImage(IRibbonControl control)
         {
-            var explorer = Globals.ThisAddIn.Application.ActiveExplorer();
-            var selection = explorer.Selection;
+            // Load the embedded resource (custom image)
+            var imageName = "OutlookBuddy.Infrastructure.Assets.M.png";
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(imageName))
+            {
+                return new Bitmap(stream);
+            }
+        }
 
-            for (var i = 1; i <= selection.Count; i++)
-                if (selection[i] is MailItem mailItem)
-                    await OutlookAppContext.ExecuteAsync(async container =>
+        public async void HandleCreateWorkItemClicked(IRibbonControl control)
+        {
+            await OutlookAppContext.ExecuteAsync(async container =>
+            {
+                var explorer = Globals.ThisAddIn.Application.ActiveExplorer();
+                var selection = explorer.Selection;
+
+                if (selection.Count > 0)
+                {
+                    if (selection[1] is MailItem mailItem)
                     {
-                        var workItemFactory = container.GetInstance<IWorkItemFactory>();
-                        await workItemFactory.CreateAsync(mailItem);
-                        MessageBox.Show("Done");
-                    });
+                        var wiFactory = container.GetInstance<IWorkItemFactory>();
+                        await wiFactory.CreateAsync(mailItem);
+                    }
+                    else
+                    {
+                        MessageBox.Show("No mail item is selected.");
+                    }
+                }
+            });
         }
-
-        public void Ribbon_Load(Office.IRibbonUI ribbonUI)
-        {
-            ribbon = ribbonUI;
-        }
-
-        #endregion
     }
 }

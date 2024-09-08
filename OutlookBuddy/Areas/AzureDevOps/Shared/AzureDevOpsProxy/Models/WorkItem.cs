@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OutlookBuddy.Areas.AzureDevOps.Shared.AzureDevOpsProxy.Models
+﻿namespace OutlookBuddy.Areas.AzureDevOps.Shared.AzureDevOpsProxy.Models
 {
-   public class WorkItem
+    public class WorkItem
     {
-        public string Title { get; }
-
-        public WorkItem(string title)
+        public WorkItem(string title, string description)
         {
             Title = title;
+            Description = description;
         }
+
+        public string Title { get; }
+        public string Description { get; }
     }
 }

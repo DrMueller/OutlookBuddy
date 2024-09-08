@@ -16,7 +16,10 @@ namespace OutlookBuddy.Areas.AzureDevOps.CreateWorkItem.Services.Implementation
 
         public async Task CreateAsync(MailItem mailItem)
         {
-            var workItem = new WorkItem(mailItem.Subject);
+            var workItem = new WorkItem(
+                mailItem.Subject,
+                mailItem.HTMLBody);
+
             await _clientProxy.CreateAsync(workItem);
         }
     }

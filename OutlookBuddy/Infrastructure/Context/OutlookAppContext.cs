@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Lamar;
@@ -17,7 +18,9 @@ namespace OutlookBuddy.Infrastructure.Context
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.StackTrace, ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                if (Debugger.IsAttached) Debugger.Break();
             }
         }
     }
